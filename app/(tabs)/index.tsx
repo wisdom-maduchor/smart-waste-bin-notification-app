@@ -98,7 +98,7 @@
 // });
 
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { View, Text, Button, Alert, StyleSheet } from "react-native";
 import {ref, onValue} from "firebase/database";
 import { database } from "@/firebase/config";
@@ -107,21 +107,34 @@ type BinStatus = "EMPTY" | "HALF" | "FULL";
 
 export default function HomeScreen() {
   const [binStatus, setBinStatus] = useState<BinStatus>("EMPTY");
+  const hasAlerted = useRef(false);
 
+  // 1️⃣ Firebase listener — STATE ONLY
   useEffect(() => {
     const binRef = ref(database, "binStatus");
 
     const unsubscribe = onValue(binRef, (snapshot) => {
       const status = snapshot.val() as BinStatus;
       setBinStatus(status);
-
-      if (status === "FULL") {
-        Alert.alert("🚨 Bin Full!", "Please empty the waste bin.");
-      }
     });
 
     return () => unsubscribe();
   }, []);
+
+  // 2️⃣ React-controlled side effect — ALERT
+  useEffect(() => {
+    if (binStatus === "FULL" && !hasAlerted.current) {
+      Alert.alert(
+        "🚨 Bin Full!",
+        "Please empty the waste bin."
+      );
+      hasAlerted.current = true;
+    }
+
+    if (binStatus !== "FULL") {
+      hasAlerted.current = false;
+    }
+  }, [binStatus]);
 
   // const showAlert = (status: string) => {
   //   if (status === "FULL") {
@@ -152,6 +165,5 @@ const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", alignItems: "center" },
   title: { fontSize: 24, marginBottom: 20, color: '#f91818ff' },
   status: { fontSize: 18, marginBottom: 20, color: '#808080' },
-  // status: { fontSize: 18 },
   // buttons: { flexDirection: "row", gap: 10 },
 });
