@@ -108,6 +108,7 @@ type BinStatus = "EMPTY" | "HALF" | "FULL";
 export default function HomeScreen() {
   const [binStatus, setBinStatus] = useState<BinStatus>("EMPTY");
   const hasAlerted = useRef(false);
+  const isMounted = useRef(true);
 
   // 1️⃣ Firebase listener — STATE ONLY
   useEffect(() => {
