@@ -149,22 +149,94 @@ export default function HomeScreen() {
   // };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Smart Waste Bin</Text>
-      <Text style={styles.status}>Status: {binStatus}</Text>
+    // <View style={styles.container}>
+    //   <Text style={styles.title}>Smart Waste Bin</Text>
+    //   <Text style={styles.status}>Status: {binStatus}</Text>
 
-      {/* <View style={styles.buttons}>
-        <Button title="Set Empty" onPress={() => updateStatus("EMPTY")} />
-        <Button title="Set Half Full" onPress={() => updateStatus("HALF")} />
-        <Button title="Set Full" onPress={() => updateStatus("FULL")} />
-      </View> */}
+    //   {/* <View style={styles.buttons}>
+    //     <Button title="Set Empty" onPress={() => updateStatus("EMPTY")} />
+    //     <Button title="Set Half Full" onPress={() => updateStatus("HALF")} />
+    //     <Button title="Set Full" onPress={() => updateStatus("FULL")} />
+    //   </View> */}
+    // </View>
+
+     <View style={styles.container}>
+    <Text style={styles.header}>Smart Waste Bin</Text>
+
+    <View style={styles.card}>
+      <Text style={styles.cardTitle}>Current Status</Text>
+
+      <Text
+        style={[
+          styles.status,
+          binStatus === "FULL" && styles.full,
+          binStatus === "HALF" && styles.half,
+          binStatus === "EMPTY" && styles.empty,
+        ]}
+      >
+        {binStatus}
+      </Text>
     </View>
+
+    <Text style={styles.footer}>
+      Live data from sensor
+    </Text>
+  </View>
   );
 }
 
+// const styles = StyleSheet.create({
+//   container: { flex: 1, justifyContent: "center", alignItems: "center" },
+//   title: { fontSize: 24, marginBottom: 20, color: '#f91818ff' },
+//   status: { fontSize: 18, marginBottom: 20, color: '#808080' },
+//   // buttons: { flexDirection: "row", gap: 10 },
+// });
+
+
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center" },
-  title: { fontSize: 24, marginBottom: 20, color: '#f91818ff' },
-  status: { fontSize: 18, marginBottom: 20, color: '#808080' },
-  // buttons: { flexDirection: "row", gap: 10 },
+  container: {
+    flex: 1,
+    backgroundColor: "#F9FAFB",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+
+  header: {
+    fontSize: 26,
+    fontWeight: "700",
+    marginBottom: 30,
+  },
+
+  card: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 24,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+
+  cardTitle: {
+    fontSize: 16,
+    color: "#6B7280",
+    marginBottom: 10,
+  },
+
+  status: {
+    fontSize: 32,
+    fontWeight: "800",
+  },
+
+  empty: { color: "#16A34A" },
+  half: { color: "#F59E0B" },
+  full: { color: "#DC2626" },
+
+  footer: {
+    marginTop: 20,
+    color: "#6B7280",
+  },
 });

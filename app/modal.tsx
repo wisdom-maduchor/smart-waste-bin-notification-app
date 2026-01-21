@@ -6,7 +6,15 @@ import { ThemedView } from '@/components/themed-view';
 
 export default function ModalScreen() {
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: '#F9FAFB' }]}>
+      <ThemedView
+        style={{
+          backgroundColor: '#fff',
+          padding: 30,
+          borderRadius: 16,
+          alignItems: 'center',
+        }}
+      ></ThemedView>
       <ThemedText type="title">This is a modal</ThemedText>
       <Link href="/" dismissTo style={styles.link}>
         <ThemedText type="link">Go to home screen</ThemedText>
