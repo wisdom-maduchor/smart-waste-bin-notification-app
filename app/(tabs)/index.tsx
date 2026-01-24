@@ -1,196 +1,234 @@
-// import { Image } from 'expo-image';
-// import { Platform, StyleSheet } from 'react-native';
 
-// import { HelloWave } from '@/components/hello-wave';
-// import ParallaxScrollView from '@/components/parallax-scroll-view';
-// import { ThemedText } from '@/components/themed-text';
-// import { ThemedView } from '@/components/themed-view';
-// import { Link } from 'expo-router';
+// import { useState, useEffect, useRef } from "react";
+// import { View, Text, Button, Alert, StyleSheet } from "react-native";
+// import {ref, onValue} from "firebase/database";
+// import { database } from "@/firebase/config";
+
+// type BinStatus = "EMPTY" | "HALF" | "FULL";
 
 // export default function HomeScreen() {
-//   return (
-//     <ParallaxScrollView
-//       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-//       headerImage={
-//         <Image
-//           source={require('@/assets/images/partial-react-logo.png')}
-//           style={styles.reactLogo}
-//         />
-//       }>
-//       <ThemedView style={styles.titleContainer}>
-//         <ThemedText type="title">Welcome!</ThemedText>
-//         <HelloWave />
-//       </ThemedView>
-//       <ThemedView style={styles.stepContainer}>
-//         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-//         <ThemedText>
-//           Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-//           Press{' '}
-//           <ThemedText type="defaultSemiBold">
-//             {Platform.select({
-//               ios: 'cmd + d',
-//               android: 'cmd + m',
-//               web: 'F12',
-//             })}
-//           </ThemedText>{' '}
-//           to open developer tools.
-//         </ThemedText>
-//       </ThemedView>
-//       <ThemedView style={styles.stepContainer}>
-//         <Link href="/modal">
-//           <Link.Trigger>
-//             <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-//           </Link.Trigger>
-//           <Link.Preview />
-//           <Link.Menu>
-//             <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-//             <Link.MenuAction
-//               title="Share"
-//               icon="square.and.arrow.up"
-//               onPress={() => alert('Share pressed')}
-//             />
-//             <Link.Menu title="More" icon="ellipsis">
-//               <Link.MenuAction
-//                 title="Delete"
-//                 icon="trash"
-//                 destructive
-//                 onPress={() => alert('Delete pressed')}
-//               />
-//             </Link.Menu>
-//           </Link.Menu>
-//         </Link>
+//   const [binStatus, setBinStatus] = useState<BinStatus>("EMPTY");
+//   const hasAlerted = useRef(false);
+//   const isMounted = useRef(true);
 
-//         <ThemedText>
-//           {`Tap the Explore tab to learn more about what's included in this starter app.`}
-//         </ThemedText>
-//       </ThemedView>
-//       <ThemedView style={styles.stepContainer}>
-//         <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-//         <ThemedText>
-//           {`When you're ready, run `}
-//           <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-//           <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-//           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-//           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-//         </ThemedText>
-//       </ThemedView>
-//     </ParallaxScrollView>
+//   // 1️⃣ Firebase listener — STATE ONLY
+//   useEffect(() => {
+//     const binRef = ref(database, "binStatus");
+
+//     const unsubscribe = onValue(binRef, (snapshot) => {
+//       const status = snapshot.val() as BinStatus;
+//       setBinStatus(status);
+//     });
+
+//     return () => unsubscribe();
+//   }, []);
+
+//   // 2️⃣ React-controlled side effect — ALERT
+//   useEffect(() => {
+//     if (binStatus === "FULL" && !hasAlerted.current) {
+//       Alert.alert(
+//         "🚨 Bin Full!",
+//         "Please empty the waste bin."
+//       );
+//       hasAlerted.current = true;
+//     }
+
+//     if (binStatus !== "FULL") {
+//       hasAlerted.current = false;
+//     }
+//   }, [binStatus]);
+
+//   // const showAlert = (status: string) => {
+//   //   if (status === "FULL") {
+//   //     Alert.alert("🚨 Bin Full!", "Please empty the waste bin.");
+//   //   }
+//   // };
+
+//   // const updateStatus = (status: "EMPTY" | "HALF" | "FULL") => {
+//   //   setBinStatus(status);
+//   //   showAlert(status);
+//   // };
+
+//   return (
+//     // <View style={styles.container}>
+//     //   <Text style={styles.title}>Smart Waste Bin</Text>
+//     //   <Text style={styles.status}>Status: {binStatus}</Text>
+
+//     //   {/* <View style={styles.buttons}>
+//     //     <Button title="Set Empty" onPress={() => updateStatus("EMPTY")} />
+//     //     <Button title="Set Half Full" onPress={() => updateStatus("HALF")} />
+//     //     <Button title="Set Full" onPress={() => updateStatus("FULL")} />
+//     //   </View> */}
+//     // </View>
+
+//      <View style={styles.container}>
+//     <Text style={styles.header}>Smart Waste Bin</Text>
+
+//     <View style={styles.card}>
+//       <Text style={styles.cardTitle}>Current Status</Text>
+
+//       <Text
+//         style={[
+//           styles.status,
+//           binStatus === "FULL" && styles.full,
+//           binStatus === "HALF" && styles.half,
+//           binStatus === "EMPTY" && styles.empty,
+//         ]}
+//       >
+//         {binStatus}
+//       </Text>
+//     </View>
+
+//     <Text style={styles.footer}>
+//       Live data from sensor
+//     </Text>
+//   </View>
 //   );
 // }
 
+// // const styles = StyleSheet.create({
+// //   container: { flex: 1, justifyContent: "center", alignItems: "center" },
+// //   title: { fontSize: 24, marginBottom: 20, color: '#f91818ff' },
+// //   status: { fontSize: 18, marginBottom: 20, color: '#808080' },
+// //   // buttons: { flexDirection: "row", gap: 10 },
+// // });
+
+
 // const styles = StyleSheet.create({
-//   titleContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     gap: 8,
+//   container: {
+//     flex: 1,
+//     backgroundColor: "#F9FAFB",
+//     justifyContent: "center",
+//     alignItems: "center",
+//     padding: 20,
 //   },
-//   stepContainer: {
-//     gap: 8,
-//     marginBottom: 8,
+
+//   header: {
+//     fontSize: 26,
+//     fontWeight: "700",
+//     marginBottom: 30,
 //   },
-//   reactLogo: {
-//     height: 178,
-//     width: 290,
-//     bottom: 0,
-//     left: 0,
-//     position: 'absolute',
+
+//   card: {
+//     width: "100%",
+//     backgroundColor: "#fff",
+//     borderRadius: 16,
+//     padding: 24,
+//     alignItems: "center",
+//     shadowColor: "#000",
+//     shadowOpacity: 0.1,
+//     shadowRadius: 10,
+//     elevation: 5,
+//   },
+
+//   cardTitle: {
+//     fontSize: 16,
+//     color: "#6B7280",
+//     marginBottom: 10,
+//   },
+
+//   status: {
+//     fontSize: 32,
+//     fontWeight: "800",
+//   },
+
+//   empty: { color: "#16A34A" },
+//   half: { color: "#F59E0B" },
+//   full: { color: "#DC2626" },
+
+//   footer: {
+//     marginTop: 20,
+//     color: "#6B7280",
 //   },
 // });
 
 
-import { useState, useEffect, useRef } from "react";
-import { View, Text, Button, Alert, StyleSheet } from "react-native";
-import {ref, onValue} from "firebase/database";
+import { useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, Animated } from "react-native";
+import * as Progress from "react-native-progress";
+import { ref, onValue } from "firebase/database";
 import { database } from "@/firebase/config";
+import { Button, Card } from "react-native-paper";
 
 type BinStatus = "EMPTY" | "HALF" | "FULL";
 
 export default function HomeScreen() {
   const [binStatus, setBinStatus] = useState<BinStatus>("EMPTY");
-  const hasAlerted = useRef(false);
-  const isMounted = useRef(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const pulseAnim = useRef(new Animated.Value(1)).current;
 
-  // 1️⃣ Firebase listener — STATE ONLY
+  // 🔥 Firebase listener
   useEffect(() => {
     const binRef = ref(database, "binStatus");
-
-    const unsubscribe = onValue(binRef, (snapshot) => {
-      const status = snapshot.val() as BinStatus;
-      setBinStatus(status);
+    return onValue(binRef, (snapshot) => {
+      setBinStatus(snapshot.val());
     });
-
-    return () => unsubscribe();
   }, []);
 
-  // 2️⃣ React-controlled side effect — ALERT
+  // 🔥 Pulse animation when FULL
   useEffect(() => {
-    if (binStatus === "FULL" && !hasAlerted.current) {
-      Alert.alert(
-        "🚨 Bin Full!",
-        "Please empty the waste bin."
-      );
-      hasAlerted.current = true;
-    }
-
-    if (binStatus !== "FULL") {
-      hasAlerted.current = false;
+    if (binStatus === "FULL") {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.1,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    } else {
+      pulseAnim.setValue(1);
     }
   }, [binStatus]);
 
-  // const showAlert = (status: string) => {
-  //   if (status === "FULL") {
-  //     Alert.alert("🚨 Bin Full!", "Please empty the waste bin.");
-  //   }
-  // };
+  const getProgress = () =>
+    binStatus === "EMPTY" ? 0.2 : binStatus === "HALF" ? 0.6 : 1;
 
-  // const updateStatus = (status: "EMPTY" | "HALF" | "FULL") => {
-  //   setBinStatus(status);
-  //   showAlert(status);
-  // };
+  const getColor = () =>
+    binStatus === "EMPTY" ? "#16A34A" : binStatus === "HALF" ? "#F59E0B" : "#DC2626";
 
   return (
-    // <View style={styles.container}>
-    //   <Text style={styles.title}>Smart Waste Bin</Text>
-    //   <Text style={styles.status}>Status: {binStatus}</Text>
+    <View style={styles.container}>
+      <Text style={styles.header}>Smart Waste Bin</Text>
 
-    //   {/* <View style={styles.buttons}>
-    //     <Button title="Set Empty" onPress={() => updateStatus("EMPTY")} />
-    //     <Button title="Set Half Full" onPress={() => updateStatus("HALF")} />
-    //     <Button title="Set Full" onPress={() => updateStatus("FULL")} />
-    //   </View> */}
-    // </View>
+      <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+        <Card style={styles.card}>
+          <Text style={styles.label}>Current Status</Text>
 
-     <View style={styles.container}>
-    <Text style={styles.header}>Smart Waste Bin</Text>
+          <Text style={[styles.status, { color: getColor() }]}>
+            {binStatus}
+          </Text>
 
-    <View style={styles.card}>
-      <Text style={styles.cardTitle}>Current Status</Text>
+          <Progress.Bar
+            progress={getProgress()}
+            width={250}
+            color={getColor()}
+            style={{ marginTop: 15 }}
+          />
+        </Card>
+      </Animated.View>
 
-      <Text
-        style={[
-          styles.status,
-          binStatus === "FULL" && styles.full,
-          binStatus === "HALF" && styles.half,
-          binStatus === "EMPTY" && styles.empty,
-        ]}
+      {/* 🔐 Admin UI */}
+      <Button
+        mode="contained"
+        style={{ marginTop: 20 }}
+        onPress={() => setIsAdmin(!isAdmin)}
       >
-        {binStatus}
-      </Text>
-    </View>
+        Switch to {isAdmin ? "User" : "Admin"}
+      </Button>
 
-    <Text style={styles.footer}>
-      Live data from sensor
-    </Text>
-  </View>
+      {isAdmin && (
+        <Text style={styles.adminText}>Admin Controls Enabled</Text>
+      )}
+    </View>
   );
 }
-
-// const styles = StyleSheet.create({
-//   container: { flex: 1, justifyContent: "center", alignItems: "center" },
-//   title: { fontSize: 24, marginBottom: 20, color: '#f91818ff' },
-//   status: { fontSize: 18, marginBottom: 20, color: '#808080' },
-//   // buttons: { flexDirection: "row", gap: 10 },
-// });
 
 
 const styles = StyleSheet.create({
@@ -199,44 +237,28 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9FAFB",
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
   },
-
   header: {
     fontSize: 26,
-    fontWeight: "700",
+    fontWeight: "800",
     marginBottom: 30,
   },
-
   card: {
-    width: "100%",
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 24,
+    padding: 30,
+    borderRadius: 18,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
   },
-
-  cardTitle: {
-    fontSize: 16,
+  label: {
     color: "#6B7280",
-    marginBottom: 10,
+    marginBottom: 6,
   },
-
   status: {
-    fontSize: 32,
-    fontWeight: "800",
+    fontSize: 34,
+    fontWeight: "900",
   },
-
-  empty: { color: "#16A34A" },
-  half: { color: "#F59E0B" },
-  full: { color: "#DC2626" },
-
-  footer: {
-    marginTop: 20,
-    color: "#6B7280",
+  adminText: {
+    marginTop: 10,
+    color: "#2563EB",
+    fontWeight: "600",
   },
 });

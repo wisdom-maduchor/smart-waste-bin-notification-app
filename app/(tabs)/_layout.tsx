@@ -32,26 +32,48 @@ export default function TabLayout() {
     //   />
     // </Tabs>
 
-    <Tabs
-  screenOptions={{
-    headerShown: false,
-    tabBarButton: HapticTab,
-    tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-    tabBarStyle: {
-      height: 70,
-      paddingBottom: 10,
-      paddingTop: 8,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
-      position: 'absolute',
-      backgroundColor: Colors[colorScheme ?? 'light'].background,
-      elevation: 10,
-    },
-    tabBarLabelStyle: {
-      fontSize: 12,
-      fontWeight: '600',
-    },
-  }}
-></Tabs>
+  <Tabs
+    screenOptions={{
+      headerShown: false,
+      tabBarButton: HapticTab,
+      tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+      tabBarStyle: {
+        height: 70,
+        paddingBottom: 10,
+        paddingTop: 8,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        position: 'absolute',
+        backgroundColor: Colors[colorScheme ?? 'light'].background,
+        elevation: 10,
+      },
+      tabBarLabelStyle: {
+        fontSize: 12,
+        fontWeight: '600',
+      },
+    }}
+  >
+    <Tabs.Screen
+      name="index"
+      options={{
+        title: "Home",
+        tabBarBadge: "!",
+        tabBarBadgeStyle: {
+          backgroundColor: "#DC2626",
+          color: "#fff",
+        },
+        tabBarIcon: ({ color }) => (
+          <IconSymbol size={28} name="house.fill" color={color} />
+        ),
+      }}
+    />
+    <Tabs.Screen
+        name="explore"
+        options={{
+          title: 'Explore',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+        }}
+      />
+  </Tabs>
   );
 }

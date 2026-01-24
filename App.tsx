@@ -8,9 +8,9 @@
 //   );
 // }
 
-// // for Expo Router
-// // import { Stack } from 'expo-router';
+// for Expo Router
+import { Stack } from 'expo-router';
 
-// // export default function App() {
-// //   return <Stack />;
-// // }
+export default function App() {
+  return <Stack />;
+}
