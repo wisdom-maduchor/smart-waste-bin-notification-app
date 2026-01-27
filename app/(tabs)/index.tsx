@@ -149,13 +149,17 @@ import * as Progress from "react-native-progress";
 import { ref, onValue } from "firebase/database";
 import { database } from "@/firebase/config";
 import { Button, Card } from "react-native-paper";
+import { getAuth } from "firebase/auth";
 
 type BinStatus = "EMPTY" | "HALF" | "FULL";
+
 
 export default function HomeScreen() {
   const [binStatus, setBinStatus] = useState<BinStatus>("EMPTY");
   const [isAdmin, setIsAdmin] = useState(false);
   const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  const auth = getAuth();
 
   // 🔥 Firebase listener
   useEffect(() => {
@@ -164,6 +168,17 @@ export default function HomeScreen() {
       setBinStatus(snapshot.val());
     });
   }, []);
+
+  useEffect(() => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const roleRef = ref(database, `users/${user.uid}/role`);
+
+  return onValue(roleRef, snap => {
+    setIsAdmin(snap.val() === "admin");
+  });
+}, []);
 
   // 🔥 Pulse animation when FULL
   useEffect(() => {
