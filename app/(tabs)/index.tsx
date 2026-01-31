@@ -161,14 +161,6 @@ export default function HomeScreen() {
 
   const auth = getAuth();
 
-  // 🔥 Firebase listener
-  useEffect(() => {
-    const binRef = ref(database, "binStatus");
-    return onValue(binRef, (snapshot) => {
-      setBinStatus(snapshot.val());
-    });
-  }, []);
-
   useEffect(() => {
   const user = auth.currentUser;
   if (!user) return;
@@ -179,6 +171,14 @@ export default function HomeScreen() {
     setIsAdmin(snap.val() === "admin");
   });
 }, []);
+
+  // 🔥 Firebase listener
+  useEffect(() => {
+    const binRef = ref(database, "binStatus");
+    return onValue(binRef, (snapshot) => {
+      setBinStatus(snapshot.val());
+    });
+  }, []);
 
   // 🔥 Pulse animation when FULL
   useEffect(() => {
