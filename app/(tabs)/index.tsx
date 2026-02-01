@@ -161,6 +161,7 @@ export default function HomeScreen() {
 
   const auth = getAuth();
 
+  // 🔐 Check user role
   useEffect(() => {
   const user = auth.currentUser;
   if (!user) return;
