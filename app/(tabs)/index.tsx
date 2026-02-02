@@ -153,7 +153,6 @@ import { getAuth } from "firebase/auth";
 
 type BinStatus = "EMPTY" | "HALF" | "FULL";
 
-
 export default function HomeScreen() {
   const [binStatus, setBinStatus] = useState<BinStatus>("EMPTY");
   const [isAdmin, setIsAdmin] = useState(false);
