@@ -5,6 +5,8 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import { Provider as PaperProvider } from "react-native-paper";
 import * as Notifications from "expo-notifications";
+import { ref, onValue } from "firebase/database";
+import { database } from "@/firebase/config";
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -22,6 +24,8 @@ export default function RootLayout() {
     console.log("Expo Push Token:", token.data);
   }
   setup();
+
+
 }, []);
 
   return (
